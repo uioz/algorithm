@@ -6,7 +6,9 @@
   "dependencies": {
     "typescript": "^3.5.3"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@types/node": "^12.7.2"
+  },
   "scripts": {
     "dev": "tsc -p ./tsconfig.json"
   },

@@ -6,6 +6,11 @@
     "target": "es2017",
     "module": "commonjs",
     "outDir": "./dist",
+    "lib": [
+      "es5",
+      "es6",
+      "esnext"
+    ]
   },
   "include": [
     "./src/*"
