@@ -1,10 +1,14 @@
 import { Node } from "./node";
 
-export class List<T>{
+/**
+ * 单向链表的基础实现, 规范来自于
+ * https://github.com/trekhleb/javascript-algorithms/tree/master/src/data-structures/linked-list
+ */
+export class List<T> implements Iterable<T>{
 
-  private head: Node<T> = null;
-  private tail: Node<T> = null;
-  private size: number = 0;
+  protected head: Node<T> = null;
+  protected tail: Node<T> = null;
+  protected sizeInner: number = 0;
 
   /**
    * 向链表中追加一个内容
@@ -21,7 +25,7 @@ export class List<T>{
       // tail 为 null 说明链表是空的这里初始化链表
       this.head = this.tail = node;
 
-    this.size++;
+    this.sizeInner++;
 
     return this;
   }
@@ -39,16 +43,21 @@ export class List<T>{
     else // head 为 null 说明 tail 和 head 需要初始化
       this.tail = this.head = node;
 
-    this.size++;
+    this.sizeInner++;
 
     return this;
 
   }
 
+  /**
+   * 判断给定的数据是否存在于链表中
+   * @param value 搜索的内容
+   * @param head 搜索的起点节点
+   */
   contains(value: T, head: Node<T> = this.head) {
 
     // node 存在便进入循环
-    for (let node = head; node !== null; node = head.getNext()) {
+    for (let node = head; node !== null; node = node.getNext()) {
       if (node.getItem() === value) {
         return true;
       }
@@ -58,6 +67,95 @@ export class List<T>{
 
   }
 
+  /**
+   * 从链表中移除给定的数据
+   * @param value 搜索的内容
+   * @param head 搜索的起点节点
+   */
+  remove(value: T, head: Node<T> = this.head) {
+
+    if (!this.head) {
+      return false;
+    }
+
+    // 首先判断第一个节点的值
+    if (this.head.getItem() === value) {
+      this.head = this.head.getNext();
+      this.sizeInner--;
+      return true;
+    }
+
+    let beforeNode = head;
+    let nextNode = head.getNext();
+
+    // 循环第一个节点后的每一个节点
+    while (nextNode !== null) {
+
+      if (nextNode.getItem() === value) {
+        beforeNode.setNext(nextNode.getNext());
+        this.sizeInner--;
+        return true;
+      }
+
+      beforeNode = nextNode;
+      nextNode = nextNode.getNext();
+
+    }
+
+    // 遍历所有节点后未找到对于的值
+    return false;
+
+  }
+
+  /**
+   * 实现迭代器接口来替换规范中的迭代实现
+   */
+  [Symbol.iterator]() {
+
+    let head = this.head;
+
+    return {
+      next: () => {
+
+        if (head) {
+          let cache = head;
+          head = head.getNext();
+          return {
+            value: cache.getItem(),
+            done: false
+          }
+        } else {
+          return {
+            value: undefined,
+            done: true
+          }
+        }
+      }
+
+    }
+
+  }
+
+  size() {
+    return this.sizeInner;
+  }
+
+
 }
 
+export function test() {
 
+  const list = new List<string>();
+
+  list.add('world');
+  list.prepend('hello');
+  console.log(list.size());
+  console.log(list.contains('hello'));
+  console.log(list.contains('world'));
+  console.log(list.contains('game'));
+
+  for (const item of list) {
+    console.log(item);
+  }
+
+}
