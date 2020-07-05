@@ -7,23 +7,28 @@ export default function Bubbling<T>(originList: Array<T>) {
   const originListLength = originList.length - 1;
 
   /**
-   * 外层循环仅仅是从0到列表长度的循环而已.
-   * 作用仅仅是控制外部循环的次数.
+   * 外层循环从低往高走, 下标代表处理次数.
    */
   while (originListIndex < originListLength) {
 
     let innerIndex = 0;
     /**
-     * 外层循环每走一步, 内层循环次数减一.
+     * 内层循环从低往高走, 下标代表处理位置.  
+     * 每次执行的次数都是总个数减去处理次数.
      */
     while (innerIndex < originListLength - originListIndex) {
 
-      // 如果条件成立, 则三方交换
+      /**
+       * 当前元素和下一个元素进行比较,
+       * 条件成立则三方交换.
+       */
       if (originList[innerIndex] < originList[innerIndex + 1]) {
         let temp = originList[innerIndex];
         originList[innerIndex] = originList[innerIndex + 1];
         originList[innerIndex + 1] = temp;
       }
+
+      console.count('running step')
 
       innerIndex++;
     }
@@ -37,4 +42,4 @@ export default function Bubbling<T>(originList: Array<T>) {
 }
 
 
-console.log(Bubbling([4,5,1,6,7]));
+console.log(Bubbling([5,7,2,5,1,0]));
